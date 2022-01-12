@@ -38,7 +38,7 @@ public class MainWindow {
         airspace.add(planeLabel);
 
         IAS = createGauge("Speed: -", 0, 0, SKYSIZE / 3, INSTRUMENT_H);
-        ALT = createGauge("Alt: - (-)", SKYSIZE / 3, 0, 2 * SKYSIZE / 3, INSTRUMENT_H);
+        ALT = createGauge("Altitude: - (-)", SKYSIZE / 3, 0, 2 * SKYSIZE / 3, INSTRUMENT_H);
         GND = createGauge("Ground: -", 0, PLANE_MARGIN + PLANE_SIZE + 50, SKYSIZE, INSTRUMENT_H);
 
         instruments = new JPanel();
