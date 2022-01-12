@@ -13,17 +13,26 @@ public class MainWindow {
         frame.setResizable(false);
 
         airspace = new JPanel();
+        airspace.setLayout(new GridLayout(3, 3));
         frame.add(airspace);
         airspace.setBackground(Color.BLUE);
 
         airspace.setSize(400, 400);
 
-        ImageIcon icon = new ImageIcon(resizedImage("src/resources/plane.png", 100, 100));
+        ImageIcon icon = new ImageIcon(resizedImage("src/main/resources/plane.png", 100, 100));
         RotatedIcon rotatedIcon = new RotatedIcon(icon, 30);
-        airspace.add(new JLabel(rotatedIcon));
 
-        rotatedIcon.setDegrees(270);
-        airspace.repaint();
+        JLabel planeLabel = new JLabel(rotatedIcon);
+        planeLabel.setHorizontalAlignment(JLabel.LEFT);
+        planeLabel.setVerticalAlignment(JLabel.BOTTOM);
+
+        airspace.add(planeLabel);
+//        System.out.println(planeLabel.getVerticalAlignment());
+//        planeLabel.setAlignmentX(0.5f);
+//        System.out.println(planeLabel.getAlignmentY());
+
+//        rotatedIcon.setDegrees(270);
+//        airspace.repaint();
     }
 
     private Image resizedImage(String path, int x, int y) {
