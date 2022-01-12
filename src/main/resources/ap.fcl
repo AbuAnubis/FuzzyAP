@@ -27,11 +27,13 @@ TERM exp_down := (50, 0) (100, 1) (200, 1);
 END_FUZZIFY
 
 FUZZIFY ground
-TERM not_implemented := (0, 1) (50, 0);
+TERM terrain := (0, 1) (10, 1) (30, 0);
+TERM warning := (10, 0) (30, 1) (50, 0);
+TERM clear := (30, 0) (50, 1) (100, 1);
 END_FUZZIFY
 
 DEFUZZIFY pitch_delta
-TERM not_implemented := (-100, 1) (100, 0);
+TERM neutral := (-10,0) (0, 1) (10, 0);
 END_DEFUZZIFY
 
 RULEBLOCK
