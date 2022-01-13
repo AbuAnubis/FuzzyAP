@@ -11,11 +11,11 @@ pitch_delta : REAL;
 END_VAR
 
 FUZZIFY speed
-TERM stall := (0, 1) (30, 1) (50, 0);
-TERM slow := (30, 0) (50, 1) (70, 1) (90, 0);
-TERM normal := (70, 0) (90, 1) (110, 1) (130, 0);
-TERM fast := (110, 0) (130, 1) (150, 1) (170, 0);
-TERM overspeed := (150, 0) (170, 1) (200, 1);
+TERM stall := (0, 1) (30, 1) (50, 0.7) (70, 0.3) (90, 0);
+// TERM slow := (30, 0) (50, 1) (70, 1) (90, 0);
+TERM normal := (30, 0) (50, 0.3) (70, 0.7) (90, 1) (110, 1) (130, 0.7) (150, 0.3) (170, 0);
+// TERM fast := (110, 0) (130, 1) (150, 1) (170, 0);
+TERM overspeed := (110, 0) (130, 0.3) (150, 0.7) (170, 1) (200, 1);
 END_FUZZIFY
 
 FUZZIFY alt_delta
@@ -27,16 +27,57 @@ TERM exp_down := (50, 0) (100, 1) (200, 1);
 END_FUZZIFY
 
 FUZZIFY ground
-TERM terrain := (0, 1) (10, 1) (30, 0);
-TERM warning := (10, 0) (30, 1) (50, 0);
-TERM clear := (30, 0) (50, 1) (100, 1);
+TERM terrain := (0, 1) (10, 1) (30, 0.3) (50, 0);
+//TERM warning := (10, 0) (30, 1) (50, 0);
+TERM safe := (10, 0) (30, 0.7) (50, 1) (100, 1);
 END_FUZZIFY
 
-DEFUZZIFY pitch_delta
+DEFUZZIFY pitch
+TERM exp_down := (-100, 1) (-60, 1) (-50, 0.5) (-30, 0);
+TERM mild_down := (-60, 0) (-50, 0.5) (-30, 1) (-10, 1) (0, 0);
 TERM neutral := (-10,0) (0, 1) (10, 0);
+TERM mild_up := (0, 0) (10, 1) (30, 1) (50, 0.5) (60, 0);
+TERM exp_up := (30, 0) (50, 0.5) (60, 1) (100, 1);
+METHOD : COG;
+DEFAULT := 0;
 END_DEFUZZIFY
 
-RULEBLOCK
+RULEBLOCK autopitch
+AND : MIN;	// Use 'min' for 'and'
+ACT : MIN;	// Use 'min' activation method
+ACCU : MAX;	// Use 'max' accumulation method
+
+// stall and terrain
+RULE 0: IF speed IS stall AND ground IS terrain THEN pitch IS neutral;
+
+// no stall and terrain
+RULE 1: IF speed IS NOT stall AND ground IS terrain AND alt_delta IS exp_down THEN pitch IS mild_up;
+RULE 2: IF speed IS NOT stall AND ground IS terrain AND alt_delta IS mild_down THEN pitch IS mild_up;
+RULE 3: IF speed IS NOT stall AND ground IS terrain AND alt_delta IS equal THEN pitch IS mild_up;
+RULE 4: IF speed IS NOT stall AND ground IS terrain AND alt_delta IS mild_up THEN pitch IS exp_up;
+RULE 5: IF speed IS NOT stall AND ground IS terrain AND alt_delta IS exp_up THEN pitch IS exp_up;
+
+// stall
+RULE 6:  IF speed IS stall AND ground IS safe AND alt_delta IS exp_down THEN pitch IS exp_down;
+RULE 7:  IF speed IS stall AND ground IS safe AND alt_delta IS mild_down THEN pitch IS exp_down;
+RULE 8:  IF speed IS stall AND ground IS safe AND alt_delta IS equal THEN pitch IS mild_down;
+RULE 9:  IF speed IS stall AND ground IS safe AND alt_delta IS mild_up THEN pitch IS neutral;
+RULE 10: IF speed IS stall AND ground IS safe AND alt_delta IS exp_up THEN pitch IS neutral;
+
+// all clear
+RULE 11: IF speed IS normal AND ground IS safe AND alt_delta IS exp_down THEN pitch IS exp_down;
+RULE 12: IF speed IS normal AND ground IS safe AND alt_delta IS mild_down THEN pitch IS mild_down;
+RULE 13: IF speed IS normal AND ground IS safe AND alt_delta IS equal THEN pitch IS neutral;
+RULE 14: IF speed IS normal AND ground IS safe AND alt_delta IS mild_up THEN pitch IS mild_up;
+RULE 15: IF speed IS normal AND ground IS safe AND alt_delta IS exp_up THEN pitch IS exp_up;
+
+// overspeed
+RULE 16: IF speed IS overspeed AND ground IS safe AND alt_delta IS exp_down THEN pitch IS neutral;
+RULE 17: IF speed IS overspeed AND ground IS safe AND alt_delta IS mild_down THEN pitch IS neutral;
+RULE 18: IF speed IS overspeed AND ground IS safe AND alt_delta IS equal THEN pitch IS mild_up;
+RULE 19: IF speed IS overspeed AND ground IS safe AND alt_delta IS mild_up THEN pitch IS exp_up;
+RULE 20: IF speed IS overspeed AND ground IS safe AND alt_delta IS exp_up THEN pitch IS exp_up;
+
 END_RULEBLOCK
 
 END_FUNCTION_BLOCK
