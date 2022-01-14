@@ -13,7 +13,7 @@ public class MainController extends Thread {
 
     public MainController() {
         plane = new Plane(FPS);
-        fuzzy = new FuzzyLogic();
+        fuzzy = new FuzzyLogic(true);
         window = new MainWindow();
         terrain = new Terrain();
         window.show();

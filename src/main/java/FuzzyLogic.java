@@ -9,9 +9,12 @@ public class FuzzyLogic {
     private FIS fis;
     private FuzzyRuleSet fuzzy;
 
-    public FuzzyLogic() {
+    public FuzzyLogic(boolean showCharts) {
         fis = FIS.load(FCL_FILE,false);
         fuzzy = fis.getFuzzyRuleSet();
+        if (showCharts) {
+            fuzzy.chart();
+        }
     }
 
     public void setValues(double speed, double alt_delta, double ground) {
