@@ -21,7 +21,7 @@ public class MainWindow {
     private double gnd;
 
     public MainWindow() {
-        frame = new JFrame();
+        frame = new JFrame("Fuzzy A/P");
         frame.setSize(SKYSIZE, 600);
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
