@@ -1,6 +1,8 @@
 import net.sourceforge.jFuzzyLogic.FIS;
 import net.sourceforge.jFuzzyLogic.rule.FuzzyRuleSet;
 
+import javax.crypto.ExemptionMechanismException;
+
 public class FuzzyLogic {
     private static final String FCL_FILE = "src/main/resources/ap.fcl";
 
@@ -20,7 +22,7 @@ public class FuzzyLogic {
 
     public double getValue() {
         fuzzy.evaluate();
-        return fuzzy.getVariable("pitch").getValue();
+        return fuzzy.getVariable("pitch").getLatestDefuzzifiedValue();
     }
 
     public static void main(String[] args) {
